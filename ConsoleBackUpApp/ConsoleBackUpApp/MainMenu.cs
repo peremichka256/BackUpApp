@@ -20,10 +20,10 @@ namespace ConsoleBackUpApp
                 Console.WriteLine("|Нажмите 2, чтобы изменить путь целевой папки       |" +
                                   "=>" + userConfig.TargetFolder + "\n");
                 Console.WriteLine("|Нажмите 3, для копирования файла в архив           |\n");
-                Console.WriteLine("|Нажмите 4, чтобы вывести логи                      |\n");
-                Console.WriteLine("|Нажмите 5, для завершения работы                   |\n");
+                Console.WriteLine("|Нажмите 4, для завершения работы                   |\n");
                 Console.WriteLine("|___________________________________________________|\n");
-                var menuButton = Int32.Parse(Console.ReadLine());
+
+                var menuString = Int32.TryParse(Console.ReadLine(), out var menuButton);
 
                 switch (menuButton)
                 {
@@ -32,7 +32,7 @@ namespace ConsoleBackUpApp
                         Console.Clear();
                         Console.WriteLine("Введите путь до сохраняемого файла\n");
                         userConfig.SourceFolder = Console.ReadLine();
-                        Config.Save(userConfig);
+                        userConfig.Save();
                         break;
                     }
                     case 2:
@@ -40,21 +40,25 @@ namespace ConsoleBackUpApp
                         Console.Clear();
                         Console.WriteLine("Введите путь до целевой папки\n");
                         userConfig.TargetFolder = Console.ReadLine();
-                        Config.Save(userConfig);
+                        userConfig.Save();
                         break;
                     }
                     case 3:
                     {
                         Console.Clear();
-                        BackUpProcess.Saving(userConfig.SourceFolder, userConfig.TargetFolder);
+                        if (!BackUpProcess.IsSaving(userConfig.SourceFolder,
+                                userConfig.TargetFolder))
+                        {
+                            Console.WriteLine("Какой-то из путей не был введен корректно" +
+                                              " или некоторый файлы уже перенесены");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Данные были успешно перенесены");
+                        }
                         break;
                     }
                     case 4:
-                    {
-                        Console.Clear();
-                        break;
-                    }
-                    case 5:
                     {
                         Console.Clear();
                         Console.WriteLine("Work is completing!");
@@ -62,6 +66,7 @@ namespace ConsoleBackUpApp
                     }
                     default:
                     {
+                        Console.Clear();
                         Console.WriteLine("Такого варианта нет.");
                         break;
                     }

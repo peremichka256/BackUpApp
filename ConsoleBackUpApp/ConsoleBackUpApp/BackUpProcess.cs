@@ -23,16 +23,23 @@ namespace ConsoleBackUpApp
         /// <param name="sourceFolder">Путь до исходной папки</param>
         /// <param name="targetFolder">Путь до целевой папки</param>
         /// <returns>Результат выполнения метода</returns>
-        public static string Saving(string sourceFolder, string targetFolder)
+        public static bool IsSaving(string sourceFolder, string targetFolder)
         {
             if (Directory.Exists(sourceFolder) && Directory.Exists(targetFolder))
             {
-                File.Delete(tempZipFile);
-                ZipFile.CreateFromDirectory(sourceFolder, tempZipFile);
-                ZipFile.ExtractToDirectory(tempZipFile, targetFolder);
-                return "The file was successfully copied";
+                try
+                {
+                    File.Delete(tempZipFile);
+                    ZipFile.CreateFromDirectory(sourceFolder, tempZipFile);
+                    ZipFile.ExtractToDirectory(tempZipFile, targetFolder);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
-            return "The file not exist";
+            return false;
         }
     }
 }

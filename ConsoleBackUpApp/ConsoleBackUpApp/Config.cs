@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace ConsoleBackUpApp
         /// <summary>
         /// Путь по которому хранятся настройки
         /// </summary>
-        public const string configFolder = ".\\Config.notes";
+        public const string ConfigFolder = ".\\UserData\\Config.notes";
 
         /// <summary>
         /// Путь до исходной папки
@@ -65,18 +66,18 @@ namespace ConsoleBackUpApp
         /// Сохраняет объект <see cref="Config"/>
         /// </summary>
         /// <param name="config">Сохраняемый объект</param>
-        public static void Save(Config config)
+        public void Save()
         {
-            if (!Directory.Exists(Path.GetDirectoryName(configFolder)))
+            if (!Directory.Exists(Path.GetDirectoryName(ConfigFolder)))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(configFolder));
+                Directory.CreateDirectory(Path.GetDirectoryName(ConfigFolder));
             }
             JsonSerializer jsonSerializer = new JsonSerializer();
 
-            using (StreamWriter stream = new StreamWriter(configFolder))
+            using (StreamWriter stream = new StreamWriter(ConfigFolder))
             using (JsonWriter writer = new JsonTextWriter(stream))
             {
-                jsonSerializer.Serialize(writer, config);
+                jsonSerializer.Serialize(writer, this);
             }
         }
 
@@ -88,12 +89,12 @@ namespace ConsoleBackUpApp
         {
             Config config = new Config();
 
-            if (!File.Exists(configFolder))
+            if (!File.Exists(ConfigFolder))
             {
                 return config;
             }
             
-            using (StreamReader stream = new StreamReader(configFolder))
+            using (StreamReader stream = new StreamReader(ConfigFolder))
             {
                 string userConfig = stream.ReadLine();
 
@@ -106,7 +107,7 @@ namespace ConsoleBackUpApp
                 {
                     config = JsonConvert.DeserializeObject<Config>(userConfig);
                 }
-                catch (Newtonsoft.Json.JsonReaderException)
+                catch (JsonReaderException)
                 {
                     return config;
                 }
