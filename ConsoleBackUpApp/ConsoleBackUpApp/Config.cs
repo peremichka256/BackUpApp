@@ -33,7 +33,7 @@ namespace ConsoleBackUpApp
         /// </summary>
         public string SourceFolder
         {
-            get { return _sourceFolder; }
+            get => _sourceFolder;
             set
             {
                 _sourceFolder = value;
@@ -50,7 +50,7 @@ namespace ConsoleBackUpApp
         /// </summary>
         public string TargetFolder
         {
-            get { return _targetFolder; }
+            get => _targetFolder;
             set
             {
                 _targetFolder = value;
